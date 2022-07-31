@@ -6,17 +6,19 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import RadioButtonRN from 'radio-buttons-react-native';
 import {useMutation} from 'react-query';
 import axios from 'axios';
+
 // import Icon from 'react-native-vector-icons/FontAwesome';
 
 type FormData = {
   firstName: string;
-  phonenumber: number;
+  contact: number;
   joiningdate: Date;
   feestatus: string;
 };
 
 const AddMember = () => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [Message, setMessage] = useState('');
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -27,9 +29,7 @@ const AddMember = () => {
   };
 
   const handleConfirm = (date: any) => {
-    console.warn('A date has been picked: ', date);
     hideDatePicker();
-    console.log('date of joining', date);
   };
   const {
     control,
@@ -38,8 +38,8 @@ const AddMember = () => {
   } = useForm({
     defaultValues: {
       firstName: 'joe',
-      phonenumber: 'rogan',
-      joiningdate: '22',
+      contact: '0987654321',
+      joiningdate: '',
       feestatus: 'due',
     },
   });
@@ -52,19 +52,33 @@ const AddMember = () => {
       label: 'due',
     },
   ];
-  const mutation = useMutation((newMember: any) => {
-    return axios.post('http://localhost:4000/api/v1/createMember', newMember);
-  });
+
+  // }
+  const {mutate, data, isLoading, isError, isSuccess, error} = useMutation(
+    (newMember: any) =>
+      axios.post('http://192.168.1.4:4000/api/v1/createMember', newMember),
+  );
   // http://localhost:4000/api/v1/createMember
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   const onSubmit = (data: any) => {
-    // console.log(data.firstName);
-    // console.log(data.phonenumber);
-    mutation.mutate({
-      name: data.firstName,
-      phonenumber: data.phonenumber,
-      feestatus: data.feestatus,
-      dateofjoining: data.joiningdate,
-    });
+    console.log(data.joiningdate);
+
+    mutate(
+      {
+        name: data.firstName,
+        contact: data.contact,
+        feestatus: data.feestatus,
+        dateofjoining: data.joiningdate,
+      },
+      {
+        onError: (err: any) => {
+          setMessage(err.response.data);
+        },
+        onSuccess: (res: any) => {
+          setMessage(res.data);
+        },
+      },
+    );
   };
   return (
     <View>
@@ -87,10 +101,10 @@ const AddMember = () => {
         name="firstName"
       />
       {errors.firstName && <Text>This is required.</Text>}
-
       <Controller
         control={control}
         rules={{
+          minLength: 10,
           maxLength: 10,
         }}
         render={({field: {onChange, onBlur, value}}) => (
@@ -105,9 +119,9 @@ const AddMember = () => {
             />
           </>
         )}
-        name="phonenumber"
+        name="contact"
       />
-      {errors.phonenumber && <Text>should be equal to 10.</Text>}
+      {errors.contact && <Text>should be equal to 10.</Text>}
       {/* for date picker */}
       <Controller
         control={control}
@@ -150,11 +164,10 @@ const AddMember = () => {
         name="feestatus"
       />
       {errors.feestatus && <Text>*set fee status</Text>}
-
       <Button title="Submit" onPress={handleSubmit(onSubmit)} />
-      {mutation.isSuccess ? <Text>member added!</Text> : null}
-      {mutation.isError ? <Text>An error occurred</Text> : null}
-      {mutation.isLoading ? <Text>Loading...</Text> : null}
+      {isSuccess ? <Text>{Message}</Text> : null}
+      {isError ? <Text> {Message} </Text> : null}
+      {isLoading ? <Text>Loading... </Text> : null}
     </View>
   );
 };
