@@ -7,6 +7,10 @@ install! 'cocoapods', :deterministic_uuids => false
 
 target 'memberManagement' do
   use_expo_modules!
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
+  pod 'ReactNativeART', :path => '../node_modules/@react-native-community/art'
+
   post_integrate do |installer|
     begin
       expo_patch_react_imports!(installer)

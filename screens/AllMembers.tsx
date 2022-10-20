@@ -6,9 +6,11 @@ import tw from 'twrnc';
 
 type Props = {};
 
+// use 192.168.1.2:4000 for android emulator, got it from  `ipconfig` in cmd
+
 const fetchAllMembers = async () => {
   const response = await axios.get(
-    'http://192.168.1.4:4000/api/v1/allMembers',
+    'http://192.168.1.2:4000/api/v1/allMembers',
     {
       headers: {
         'Content-Type': 'application/json',
