@@ -8,22 +8,22 @@ import {NavigationContainer} from '@react-navigation/native';
 import ScreenNavigation from './navigation/ScreenNavigation ';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Home from './screens/Home';
+import {Provider as PaperProvider} from 'react-native-paper';
+import Styles from './style/Stylesheet/Styles';
 
 const Stack = createNativeStackNavigator();
 
 const App: React.FC = () => {
   const queryClient = new QueryClient();
   return (
-    // <SafeAreaView>
     <NavigationContainer>
       <QueryClientProvider client={queryClient}>
-        <StatusBar />
-        {/* <View style={tw`p-4  android:pt-2 dark:bg-black`}> */}
-        <ScreenNavigation />
-        {/* </View> */}
+        <PaperProvider>
+          <StatusBar />
+          <ScreenNavigation />
+        </PaperProvider>
       </QueryClientProvider>
     </NavigationContainer>
-    // </SafeAreaView>
   );
 };
 

@@ -10,7 +10,11 @@ type Props = {};
 const Stack = createNativeStackNavigator();
 const Navigation = (props: Props) => {
   return (
-    <Stack.Navigator initialRouteName="Home">
+    <Stack.Navigator
+      initialRouteName="Home"
+      screenOptions={{
+        headerShown: false,
+      }}>
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="AddMember" component={AddMember} />
       <Stack.Screen name="AllMembers" component={AllMembers} />

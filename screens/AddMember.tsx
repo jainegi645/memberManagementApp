@@ -56,7 +56,7 @@ const AddMember = () => {
   // }
   const {mutate, data, isLoading, isError, isSuccess, error} = useMutation(
     (newMember: any) =>
-      axios.post('http://192.168.1.4:4000/api/v1/createMember', newMember),
+      axios.post('http://192.168.1.2:4000/api/v1/createMember', newMember),
   );
   // http://localhost:4000/api/v1/createMember
   // eslint-disable-next-line @typescript-eslint/no-shadow
