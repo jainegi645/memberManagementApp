@@ -1,10 +1,9 @@
-import {View, Text, FlatList, Pressable} from 'react-native';
+import {View, Text, FlatList, Pressable, ActivityIndicator} from 'react-native';
 import React from 'react';
 import {useQuery} from 'react-query';
 import axios from 'axios';
 import tw from 'twrnc';
 import SingleMemberAttendence from '../components/markAttendence/SingleMemberAttendence';
-import AlertBox from '../components/alerts/AlertBox';
 import useMarkAttendence from '../components/markAttendence/useMarkAttendence';
 
 type Props = {
@@ -14,7 +13,7 @@ type Props = {
 
 const fetchAllMembers = async () => {
   const response = await axios.get(
-    'http://192.168.1.2:4000/api/v1/allMembers',
+    'http://ec2-43-204-107-0.ap-south-1.compute.amazonaws.com:4000/api/v1/allMembers',
     {
       headers: {
         'Content-Type': 'application/json',
@@ -44,7 +43,9 @@ const MarkAttendence = (props: Props) => {
     //TODO: useMutate to update the database with save button,
 
     <>
-      {isLoading && <Text>Loading...</Text>}
+      <View style={tw`flex-row justify-between `}>
+        {isLoading && <ActivityIndicator size="large" />}
+      </View>
       {isError && <Text>error</Text>}
       {/*
       {errorMutate && <Text> {Message} </Text>}
