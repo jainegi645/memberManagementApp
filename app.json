@@ -1,5 +1,13 @@
 {
   "name": "memberManagement",
   "slug": "memberManagement",
-  "userInterfaceStyle": "automatic"
+  "userInterfaceStyle": "automatic",
+  "android": {
+    "package": "com.yourcompany.yourappname"
+  },
+  "extra": {
+    "eas": {
+      "projectId": "cd340a41-7912-49e3-a5df-39c4df0594a8"
+    }
+  }
 }

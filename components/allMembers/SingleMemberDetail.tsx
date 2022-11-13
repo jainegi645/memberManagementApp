@@ -1,4 +1,11 @@
-import {View, Text, Pressable, TextInput, Image} from 'react-native';
+import {
+  View,
+  Text,
+  Pressable,
+  TextInput,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
 import React, {useState} from 'react';
 import tw from 'twrnc';
 import moment from 'moment';
@@ -21,6 +28,7 @@ type Props = {
   dateofjoining: number;
   params: any;
   route: any;
+  refetchAllMember: any;
 };
 
 const SingleMemberDetail = (Props: Props) => {
@@ -69,11 +77,15 @@ const SingleMemberDetail = (Props: Props) => {
   ];
   const {mutate, data, isLoading, isError, isSuccess, error} = useMutation(
     (newMember: any) =>
-      axios.post(`http://localhost:4000/api/v1/updateMember`, newMember),
+      axios.post(
+        `http://ec2-43-204-107-0.ap-south-1.compute.amazonaws.com:4000/api/v1/updateMember`,
+        newMember,
+      ),
   );
   // eslint-disable-next-line @typescript-eslint/no-shadow
   const onSubmit = (data: any) => {
     console.log('data singlemember: ', data);
+    // Props.route.params.refetch;
 
     setEdit(false);
     setShowAlertMessage(true);
@@ -180,7 +192,7 @@ const SingleMemberDetail = (Props: Props) => {
                 <>
                   <Pressable
                     onPress={showDatePicker}
-                    style={tw`p-2 w-25  rounded flex-row   border-b`}>
+                    style={tw`p-2 w-25  rounded flex-row  border-b`}>
                     <Text>{dateofjoining} </Text>
 
                     <Image source={calender} style={tw`w-5  h-5`} />
@@ -301,9 +313,7 @@ const SingleMemberDetail = (Props: Props) => {
           title="An Error Occured!"
         />
       ) : null}
-      {isLoading ? <Text>Loading... </Text> : null}
-      {/* {QueryError ? <Text>Loading... </Text> : null}
-      {isQuerySuccess ? <Text>member deleted</Text> : null} */}
+      {isLoading && <ActivityIndicator size="large" />}
     </View>
   );
 };

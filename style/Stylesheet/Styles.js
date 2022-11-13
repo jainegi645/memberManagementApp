@@ -109,6 +109,14 @@ export default StyleSheet.create({
     marginTop: '-13%',
     backgroundColor: '#F6F5F5',
     // marginBottom: '10%',
+  },
+  Boxshadow: {
+    shadowColor: 'rgba(0, 0, 0, 0.1)',
 
+    shadowOffset: {width: 0, height: 1},
+
+    shadowRadius: 3,
+
+    elevation: 1.5,
   },
 });

@@ -11,6 +11,8 @@ target 'memberManagement' do
 
   pod 'ReactNativeART', :path => '../node_modules/@react-native-community/art'
 
+  pod 'RNCCheckbox', :path => '../node_modules/@react-native-community/checkbox'
+
   post_integrate do |installer|
     begin
       expo_patch_react_imports!(installer)

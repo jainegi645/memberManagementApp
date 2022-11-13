@@ -13,6 +13,7 @@ import axios from 'axios';
 import tw from 'twrnc';
 import arrowGray from '../style/Images/arrow-right-gray.png';
 import {useNavigation} from '@react-navigation/native';
+import styles from '../style/Stylesheet/Styles';
 type Props = {
   navigation: any;
 };
@@ -34,9 +35,13 @@ const fetchAllMembers = async () => {
 const AllMembers = (props: Props) => {
   const navigation = useNavigation();
 
-  const {data, isLoading, isError, isSuccess, error} = useQuery(
+  const {data, isLoading, isError, isSuccess, error, refetch} = useQuery(
     'allMembers',
     fetchAllMembers,
+    {
+      refetchOnWindowFocus: true,
+      cacheTime: 0,
+    },
   );
   return (
     <View style={tw`px-2`}>
@@ -60,10 +65,11 @@ const AllMembers = (props: Props) => {
                   feeStatus: item.feeStatus,
                   contact: item.contact,
                   dateofjoining: item.dateofjoining,
+                  refetchAllMember: refetch,
                 })
               }>
               <View
-                style={tw`border rounded-md border-slate-500 py-4 mt-2 flex-row justify-between px-1 mb-4`}>
+                style={tw` border rounded-md border-slate-500 py-4 mt-2 flex-row justify-between px-2 mb-4`}>
                 <Text style={tw`text-xl capitalize`}>{item.name}</Text>
                 <View style={tw` flex-row justify-evenly`}>
                   <Text style={tw`text-lg capitalize `}>

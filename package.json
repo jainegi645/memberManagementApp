@@ -12,6 +12,7 @@
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",
     "@react-native-community/art": "^1.2.0",
+    "@react-native-community/checkbox": "^0.5.13",
     "@react-native-community/cli-platform-android": "^7.0.0",
     "@react-native-community/datetimepicker": "6.1.2",
     "@react-navigation/native": "^6.0.11",
