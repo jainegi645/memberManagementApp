@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  Pressable,
-  TextInput,
-  Image,
-  ActivityIndicator,
-} from 'react-native';
+import {View, Text, Pressable, TextInput, Image} from 'react-native';
 import React, {useState} from 'react';
 import tw from 'twrnc';
 import moment from 'moment';
@@ -19,6 +12,9 @@ import axios from 'axios';
 import AlertForDelete from '../alerts/AlertForDelete';
 import AlertForOk from '../alerts/AlertForOk';
 import AlertForMessage from '../alerts/AlertForMessage';
+import Loader from '../Helper/Loader';
+import Calender from '../Helper/Calender';
+import useGetAttendenceByContact from './useGetAttendenceByContact';
 
 type Props = {
   name: string;
@@ -28,7 +24,7 @@ type Props = {
   dateofjoining: number;
   params: any;
   route: any;
-  refetchAllMember: any;
+  navigation: any;
 };
 
 const SingleMemberDetail = (Props: Props) => {
@@ -37,10 +33,18 @@ const SingleMemberDetail = (Props: Props) => {
   );
   const [edit, setEdit] = useState(false);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [Message, setMessage] = useState('none');
+  const [Message, setMessage] = useState('');
+  const [title, setTitle] = useState('');
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [showAlertOk, setShowAlertOk] = useState<boolean>(false);
   const [showAlertMessage, setShowAlertMessage] = useState<boolean>(false);
+
+  const {
+    getAttendenceByContactData,
+    getAttendenceByContactLoading,
+    getAttendenceByContactError,
+    getAttendenceByContactSuccess,
+  } = useGetAttendenceByContact(Props.route.params.contact);
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -78,15 +82,12 @@ const SingleMemberDetail = (Props: Props) => {
   const {mutate, data, isLoading, isError, isSuccess, error} = useMutation(
     (newMember: any) =>
       axios.post(
-        `http://ec2-43-204-107-0.ap-south-1.compute.amazonaws.com:4000/api/v1/updateMember`,
+        'http://ec2-43-204-107-0.ap-south-1.compute.amazonaws.com:4000/api/v1/updateMember',
         newMember,
       ),
   );
   // eslint-disable-next-line @typescript-eslint/no-shadow
   const onSubmit = (data: any) => {
-    console.log('data singlemember: ', data);
-    // Props.route.params.refetch;
-
     setEdit(false);
     setShowAlertMessage(true);
     mutate(
@@ -119,25 +120,33 @@ const SingleMemberDetail = (Props: Props) => {
         contact: Props.route.params.contact,
       })
       .then(res => {
-        console.log(res.data);
-
         if (res.data === 'Member Successfully Deleted') {
-          setShowAlert(false);
+          setMessage(res.data);
+          setTitle('Member Deleted!');
           setShowAlertOk(true);
         }
       })
       .catch(err => {
-        console.log('err: ', err);
+        setTitle('An Error Occure!');
+        setMessage(err.response.data);
+        setShowAlertOk(true);
+        console.log('err: ', err.response.data);
       });
     // return response;
   };
   //Todo:handle promise here in delete function
-  //Todo: add alert on delte and update
 
   const onAlertConfirmPressed = () => {
-    deleteMember();
+    console.log('reached alert comfirm');
+
     setShowAlert(false);
+    setTimeout(() => {
+      deleteMember();
+    }, 500);
   };
+
+  //TODO: Reload when 'edit member' is succesfull
+
   return (
     <View style={tw`px-2`}>
       <Text style={tw`pt-4 text-2xl text-zinc-800`}> Full details</Text>
@@ -172,7 +181,7 @@ const SingleMemberDetail = (Props: Props) => {
           <Text style={tw`text-lg capitalize `}>{Props.route.params.name}</Text>
         )}
       </View>
-      <View style={tw`flex-row py-4  justify-between`}>
+      <View style={tw`flex-row py-2  justify-between`}>
         <Text style={tw`text-lg`}> Contact</Text>
 
         <Text style={tw`text-lg capitalize `}>
@@ -229,9 +238,9 @@ const SingleMemberDetail = (Props: Props) => {
                 <>
                   <RadioButtonRN
                     data={fee}
-                    // boxStyle={tw`rounded border-gray-600 border-b-2`}
+                    // boxStyle={tw`rounded border-gray-600 border-2`}
                     textStyle={tw` text-lg  pl-2 `}
-                    style={tw` w-20`}
+                    style={tw` w-24 justify-between border-red-500  -mt-5`}
                     circleSize={12}
                     box={false}
                     duration={100}
@@ -250,47 +259,54 @@ const SingleMemberDetail = (Props: Props) => {
           </Text>
         )}
       </View>
-      <View style={tw`flex-row  justify-between`}>
-        {edit ? (
-          <>
-            <Pressable
-              style={tw`border rounded-lg`}
-              onPress={() => setEdit(false)}>
-              <Text style={tw` px-8 py-3 `}>Cancel</Text>
-            </Pressable>
-            <Pressable
-              style={tw`rounded bg-green-600`}
-              onPress={handleSubmit(onSubmit)}>
-              <Text style={tw` px-8 py-3 text-white`}>Submit</Text>
-            </Pressable>
-          </>
-        ) : (
-          <>
-            <Pressable style={tw`border rounded-lg`} onPress={deleteBtnHandler}>
-              <Text style={tw` px-8 py-3 `}>Delete</Text>
-            </Pressable>
-            <Pressable
-              style={tw`rounded bg-cyan-600`}
-              onPress={() => setEdit(true)}>
-              <Text style={tw` px-8 py-3 text-white`}>Edit</Text>
-            </Pressable>
-          </>
-        )}
-      </View>
+      {edit ? null : (
+        <View style={tw`pb-4 `}>
+          <Calender DateOfPresent={getAttendenceByContactData?.data} />
+        </View>
+      )}
+
+      {edit ? (
+        <View style={tw`flex-row -bottom-10 justify-between`}>
+          <Pressable
+            style={tw`border rounded-lg`}
+            onPress={() => setEdit(false)}>
+            <Text style={tw` px-8 py-3 `}>Cancel</Text>
+          </Pressable>
+          <Pressable
+            style={tw`rounded bg-green-600`}
+            onPress={handleSubmit(onSubmit)}>
+            <Text style={tw` px-8 py-3 text-white`}>Submit</Text>
+          </Pressable>
+        </View>
+      ) : (
+        <View style={tw`flex-row  justify-between`}>
+          <Pressable style={tw`border rounded-lg`} onPress={deleteBtnHandler}>
+            <Text style={tw` px-8 py-3 `}>Delete</Text>
+          </Pressable>
+          <Pressable
+            style={tw`rounded bg-cyan-600`}
+            onPress={() => setEdit(true)}>
+            <Text style={tw` px-8 py-3 text-white`}>Edit</Text>
+          </Pressable>
+        </View>
+      )}
       <AlertForDelete
         showAlert={showAlert}
         setShowAlert={setShowAlert}
-        onConfirmPressed={onAlertConfirmPressed}
+        onConfirmPressed={() => onAlertConfirmPressed()}
         message="Are you sure you want to delete this member?"
         title="Delete member!"
       />
       <AlertForOk
         showAlert={showAlertOk}
         setShowAlert={setShowAlertOk}
-        onConfirmPressed={onAlertConfirmPressed}
+        onConfirmPressed={() => {
+          setShowAlertOk(false);
+          Props.navigation.goBack();
+        }}
         showCancelButton={false}
-        message="Member deleted successfully"
-        title="Member Deleted!"
+        message={Message}
+        title={title}
       />
 
       {isSuccess ? (
@@ -313,7 +329,7 @@ const SingleMemberDetail = (Props: Props) => {
           title="An Error Occured!"
         />
       ) : null}
-      {isLoading && <ActivityIndicator size="large" />}
+      {isLoading && <Loader />}
     </View>
   );
 };

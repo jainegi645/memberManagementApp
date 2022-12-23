@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Text,
   View,
@@ -10,6 +10,7 @@ import {
   StatusBar,
   ScrollView,
 } from 'react-native';
+import Loader from '../components/Helper/Loader';
 
 import {useForm, Controller} from 'react-hook-form';
 import tw from 'twrnc';
@@ -20,8 +21,7 @@ import axios from 'axios';
 import moment from 'moment';
 import bgimg from '../style/Images/bgpattern.png';
 import calender from '../style/Images/calender.png';
-import {black} from 'react-native-paper/lib/typescript/styles/colors';
-
+import AlertForOk from '../components/alerts/AlertForOk';
 // import Icon from 'react-native-vector-icons/FontAwesome';
 
 type FormData = {
@@ -36,12 +36,13 @@ type Props = {
 
 const AddMember = ({navigation}: Props) => {
   const currentDate = moment(new Date()).format('DD-MM-YYYY');
-  const stagingUrl = process.env.REACT_APP_Staging_url;
-  console.log('staging url: ', stagingUrl);
+  // const stagingUrl = process.env.REACT_APP_Staging_url;
+  // console.log('staging url: ', stagingUrl);
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [Message, setMessage] = useState('');
   const [defaultDate, setNewDate] = useState<any>(currentDate);
+  const [showAlert, setShowAlert] = useState(false);
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -80,7 +81,7 @@ const AddMember = ({navigation}: Props) => {
   const {mutate, data, isLoading, isError, isSuccess, error} = useMutation(
     (newMember: any) =>
       axios.post(
-        `http://ec2-43-204-107-0.ap-south-1.compute.amazonaws.com:4000/api/v1/createMember`,
+        'http://ec2-43-204-107-0.ap-south-1.compute.amazonaws.com:4000/api/v1/createMember',
         newMember,
       ),
   );
@@ -97,6 +98,7 @@ const AddMember = ({navigation}: Props) => {
       },
       {
         onError: (err: any) => {
+          console.log('on create member', err.response.data);
           setMessage(err.response.data);
         },
         onSuccess: (res: any) => {
@@ -105,6 +107,10 @@ const AddMember = ({navigation}: Props) => {
       },
     );
   };
+  useEffect(() => {
+    setShowAlert(true);
+  }, [isError]);
+
   return (
     <>
       <ScrollView contentContainerStyle={{flexGrow: 1}}>
@@ -248,10 +254,27 @@ const AddMember = ({navigation}: Props) => {
               <Text style={tw`px-6 text-white`}>Submit</Text>
             </Pressable>
           </View>
-
-          {isSuccess ? <Text>{Message}</Text> : null}
-          {isError ? <Text> {Message} </Text> : null}
-          {isLoading ? <Text>Loading... </Text> : null}
+          {isSuccess && (
+            <AlertForOk
+              showAlert={showAlert}
+              setShowAlert={setShowAlert}
+              title="Member Added"
+              onConfirmPressed={() => setShowAlert(false)}
+              message={Message}
+              showCancelButton={false}
+            />
+          )}
+          {isError && (
+            <AlertForOk
+              showAlert={showAlert}
+              setShowAlert={setShowAlert}
+              title="Error Occured!"
+              onConfirmPressed={() => setShowAlert(false)}
+              message={Message}
+              showCancelButton={false}
+            />
+          )}
+          {isLoading ? <Loader /> : null}
         </View>
       </ScrollView>
     </>

@@ -7,6 +7,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.art.ARTPackage;
 import com.reactnativecommunity.checkbox.ReactCheckBoxPackage;
 import com.reactnativecommunity.art.ARTPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -29,6 +30,15 @@ public class MainApplication extends Application implements ReactApplication {
         public boolean getUseDeveloperSupport() {
           return BuildConfig.DEBUG;
         }
+  //added this line from react native art documentation
+//   @Override
+// protected List<ReactPackage> getPackages() {
+//     return Arrays.asList(
+//             new MainReactPackage(),
+//             new ARTPackage()
+//     );
+// }
+// end of added line
 
         @Override
         protected List<ReactPackage> getPackages() {

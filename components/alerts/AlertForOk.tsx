@@ -31,7 +31,6 @@ const AlertForOk = ({
         showCancelButton={showCancelButton}
         showConfirmButton={true}
         cancelText="cancel"
-        // confirmText="Yes, delete it"
         confirmButtonColor="#DD6B55"
         onCancelPressed={() => {
           setShowAlert(false);
@@ -42,4 +41,4 @@ const AlertForOk = ({
   );
 };
 
-export default AlertForOk;
+export default React.memo(AlertForOk);
