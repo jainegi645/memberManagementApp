@@ -119,4 +119,21 @@ export default StyleSheet.create({
 
     elevation: 1.5,
   },
+  loading: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 390,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F5FCFF88',
+    zIndex: 1000,
+  },
+  spinnerTextStyle: {
+    color: '#FFF',
+  },
+  arrow: {
+    zIndex: 1000,
+  },
 });

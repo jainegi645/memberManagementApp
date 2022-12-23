@@ -1,24 +1,36 @@
 import {View, Text, Pressable} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import tw from 'twrnc';
-// import CheckBox from '@react-native-community/checkbox';
 import Checkbox from 'expo-checkbox';
-// import useMarkAttendence from './useMarkAttendence';
 type Props = {
   name: string;
   clickHandler: any;
   memberPresent: any;
+  contact: number;
+  prevAttendene: boolean;
 };
 
-//!TODO:vector icons are not rendering in the checkbox, even after  react-native-paper checkbox
-
-const SingleMemberAttendence = ({name, clickHandler, memberPresent}: Props) => {
-  const [checked, setChecked] = useState(false);
-  const onCheckPress = (memberName: String) => {
+const SingleMemberAttendence = ({
+  name,
+  clickHandler,
+  contact,
+  prevAttendene,
+  memberPresent,
+}: Props) => {
+  const [checked, setChecked] = useState(
+    memberPresent.some((item: any) => item.contact === contact),
+  );
+  const onCheckPress = (contactno: number) => {
     setChecked(!checked);
-    clickHandler(memberName);
+    clickHandler({contactno, name});
   };
-  console.log('single member attendene component rendered');
+  useEffect(() => {
+    console.log('use effect ran');
+
+    memberPresent.some((item: any) => item.contact === contact)
+      ? setChecked(true)
+      : setChecked(false);
+  }, [contact, memberPresent]);
 
   return (
     //TODO: useQuery to fetch the data from the database for checkbox to be prechecked,
@@ -28,9 +40,8 @@ const SingleMemberAttendence = ({name, clickHandler, memberPresent}: Props) => {
         <Text style={tw`text-xl capitalize`}>{name}</Text>
 
         <Checkbox
-          // style={styles.checkbox}
           value={checked}
-          onValueChange={() => onCheckPress(name)}
+          onValueChange={() => onCheckPress(contact)}
           color={checked ? '#4630EB' : undefined}
         />
       </View>

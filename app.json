@@ -1,5 +1,6 @@
 {
   "name": "memberManagement",
+  // "displayName": "Member Management",
   "slug": "memberManagement",
   "userInterfaceStyle": "automatic",
   "android": {

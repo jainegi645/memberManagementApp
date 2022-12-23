@@ -8,7 +8,9 @@ import arrow from '../style/Images/arrow.png';
 import pieChart from '../style/Images/pieChart.png';
 import threeLines from '../style/Images/threeLines.png';
 import tw from 'twrnc';
-// import PieChart from 'react-native-pie-chart';
+import PieChart from 'react-native-pie-chart';
+import {Surface, Shape} from '@react-native-community/art';
+// import {PieChart} from 'react-native-svg-charts';
 type Props = {
   navigation: any;
 };
@@ -52,7 +54,7 @@ const Home = (props: Props) => {
           onPress={() => props.navigation.navigate('AllMembers')}>
           <View>
             <Text style={tw`text-xl`}> All Members</Text>
-            <Text style={tw`text-base`}> 0 out of 60 present</Text>
+            <Text style={tw`text-base`}>find details of all members here</Text>
           </View>
           <Image source={arrow} />
         </Pressable>
@@ -61,7 +63,7 @@ const Home = (props: Props) => {
           onPress={() => props.navigation.navigate('MarkAttendence')}>
           <View>
             <Text style={tw`text-xl`}> Mark Attendence</Text>
-            <Text style={tw`text-base`}> 0 out of 60 present</Text>
+            <Text style={tw`text-base`}>mark attendence according to date</Text>
           </View>
           <Image source={arrow} />
         </Pressable>
@@ -75,11 +77,15 @@ const Home = (props: Props) => {
           <Image source={arrow} />
         </Pressable>
         <View style={tw`border mx-3 mb-4  rounded-xl border-gray-500 z-10 p-6`}>
-          {/* <PieChart
-            widthAndHeight={widthAndHeight}
-            series={series}
-            sliceColor={sliceColor}
-          /> */}
+          {/* <Surface width={500} height={500}>
+            <PieChart
+              widthAndHeight={widthAndHeight}
+              series={series}
+              sliceColor={sliceColor}
+            />
+            <Shape d={pieChart} stroke="#000" strokeWidth={1} />
+          </Surface> */}
+
           <Image style={tw``} source={pieChart} />
         </View>
       </ScrollView>
